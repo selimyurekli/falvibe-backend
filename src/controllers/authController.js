@@ -1,7 +1,7 @@
 import AuthService from "../services/authService.js";
-import BadRequestError from '../errors/BadRequestError.js'; // Import specific error
-import { sendSuccess } from '../utils/responseHandler.js'; // No need for sendError here
-import asyncHandler from 'express-async-handler'; // Import asyncHandler
+import BadRequestError from '../errors/BadRequestError.js';
+import { sendSuccess } from '../utils/responseHandler.js';
+import asyncHandler from 'express-async-handler';
 
 class AuthController {
   static googleSignIn = asyncHandler(async (req, res, next) => {
