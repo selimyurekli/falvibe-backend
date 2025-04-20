@@ -2,8 +2,6 @@ import UserService from "../services/userService.js";
 import asyncHandler from 'express-async-handler';
 import { sendSuccess } from '../utils/responseHandler.js';
 
-
-
 class UserController {
   static getUser = asyncHandler(async (req, res, next) => {
     const user = await UserService.getUser(req);

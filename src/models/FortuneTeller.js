@@ -20,14 +20,6 @@ const FortuneTellerSchema = new mongoose.Schema({
   avatar: {
     type: String
   },
-  prompt: {
-    type: String,
-    required: [true, 'AI prompt is required.']
-  },
-  modelIdentifier: {
-      type: String,
-      default: 'default-gpt'
-  },
   isPaid: {
     type: Boolean,
     required: true,
@@ -39,16 +31,9 @@ const FortuneTellerSchema = new mongoose.Schema({
     default: 0,
     min: [0, 'Credit cost cannot be negative.']
   },
-  isActive: {
-    type: Boolean,
-    default: true,
-    index: true
-  },
-  inputRequirements: {
-      type: String,
-      trim: true
-  },
   modelSettings: {
+      modelIdentifier: {type: String, default: 'default-gpt'},
+      prompt: {type: String, required: true },
       temperature: { type: Number, default: 0.7 },
       maxTokens: { type: Number, default: 500 }
   }

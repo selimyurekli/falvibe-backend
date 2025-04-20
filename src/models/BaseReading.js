@@ -1,7 +1,8 @@
-// --- START OF FILE models/Reading.js ---
+// models/BaseReading.js
+
 import mongoose from 'mongoose';
 
-const ReadingSchema = new mongoose.Schema({
+const BaseReadingSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -16,13 +17,18 @@ const ReadingSchema = new mongoose.Schema({
   },
   fortuneType: {
     type: String,
+    enum: ['Coffee', 'Tarot', 'Palm'],
     required: true,
-    enum: ['Tarot', 'Coffee', 'Palm'],
     index: true
   },
-  errorDetails: {
-      type: String
+  fortuneText: {
+    type: String,
+    required: true
+  },
+  generatedImagePath: {
+    type: String,
+    trim: true
   }
 }, { timestamps: true });
 
-export default mongoose.model('Reading', ReadingSchema);
+export default BaseReadingSchema;
