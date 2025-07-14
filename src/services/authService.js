@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { OAuth2Client } from "google-auth-library";
 import BaseError from "../errors/BaseError.js";
 import AuthenticationError from "../errors/AuthenticationError.js";
+import { clerkClient } from '@clerk/express';
 
 dotenv.config();
 
@@ -11,23 +12,19 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class AuthService {
 
-  static async handleGoogleSignIn(idToken) {
+  static async handleClerkSignIn(authUser) {
     try {
-      const ticket = await client.verifyIdToken({
-        idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      const payload = ticket.getPayload();
-
-      if (!payload || !payload.sub || !payload.email) {
-        throw new AuthenticationError("Authentication failed: Invalid Google token payload.", { code: 'INVALID_TOKEN_PAYLOAD' });
+      if (!authUser || !authUser.isAuthenticated) {
+        throw new AuthenticationError("Authentication failed: Invalid token payload.", { code: 'INVALID_TOKEN_PAYLOAD' });
       }
 
+      const userInfo = await clerkClient.users.getUser(authUser.userId);
+
       const userProfile = {
-        id: payload.sub,
-        email: payload.email,
-        name: payload.name,
-        avatar: payload.picture,
+        id: userInfo.id,
+        email: userInfo.emailAddresses?.[0]?.emailAddress,
+        name: `${userInfo.firstName || ''} ${userInfo.lastName || ''}`.trim(),
+        avatar: userInfo.imageUrl,
       };
 
       const user = await this.findOrCreateUser(userProfile);
@@ -58,11 +55,11 @@ class AuthService {
 
   static async findOrCreateUser(profile) {
     try {
-      let user = await User.findOne({ googleId: profile.id });
+      let user = await User.findOne({ clerkId: profile.id });
 
       if (!user) {
         user = new User({
-          googleId: profile.id,
+          clerkId: profile.id,
           name: profile.name,
           email: profile.email,
           avatar: profile.avatar,

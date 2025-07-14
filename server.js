@@ -11,6 +11,7 @@ import globalErrorHandler from './src/middlewares/errorHandler.js';
 import NotFoundError from './src/errors/NotFoundError.js';
 import dotenv from "dotenv";
 import authMiddleware from "./src/middlewares/authMiddleware.js"
+import { clerkMiddleware} from '@clerk/express'
 dotenv.config();
 connectDB();
 
@@ -20,8 +21,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'))
 
+const options = {
+  secretKey: process.env.CLERK_SECRET_KEY,
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY}
 // Routes
-app.use("/auth", authRoutes);
+app.use("/auth", clerkMiddleware(options), authRoutes);
 app.use("/user", authMiddleware, userRoutes);
 app.use("/fortune-teller", fortuneTellerRoutes);
 app.use("/questions", questionRoutes);
@@ -38,4 +42,3 @@ app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-

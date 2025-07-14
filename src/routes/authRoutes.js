@@ -4,6 +4,6 @@ import AuthController from "../controllers/authController.js";
 const router = express.Router();
 
 // POST /auth/google/signin
-router.post("/google/signin", AuthController.googleSignIn);
+router.post("/clerk/signin", AuthController.clerkSignIn);
 
 export default router;

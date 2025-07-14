@@ -4,13 +4,9 @@ import { sendSuccess } from '../utils/responseHandler.js';
 import asyncHandler from 'express-async-handler';
 
 class AuthController {
-  static googleSignIn = asyncHandler(async (req, res, next) => {
-    const { idToken } = req.body;
-    if (!idToken) {
-      throw new BadRequestError("ID token is required.", { code: 'MISSING_ID_TOKEN' });
-    }
-
-    const { token, user } = await AuthService.handleGoogleSignIn(idToken);
+  static clerkSignIn = asyncHandler(async (req, res, next) => {
+    const authUser = req.auth();
+    const { token, user } = await AuthService.handleClerkSignIn(authUser);
 
     sendSuccess(res, "Authentication successful.", { token, user }, 200);
   });
