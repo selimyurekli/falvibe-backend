@@ -1,14 +1,10 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { OAuth2Client } from "google-auth-library";
 import BaseError from "../errors/BaseError.js";
 import AuthenticationError from "../errors/AuthenticationError.js";
-import { clerkClient } from '@clerk/express';
 
 dotenv.config();
-
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class AuthService {
 
@@ -28,17 +24,8 @@ class AuthService {
       };
 
       const user = await this.findOrCreateUser(userProfile);
-      const token = this.generateToken(user);
 
-      return {
-        token: token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          avatar: user.avatar,
-        },
-      };
+      return {user};
 
     } catch (error) {
       if (error instanceof BaseError && error.isOperational) {
@@ -99,13 +86,6 @@ class AuthService {
     }
   }
 
-  static generateToken(user) {
-    return jwt.sign(
-      { id: user._id, email: user.email, name: user.name},
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN}
-    );
-  }
 }
 
 export default AuthService;

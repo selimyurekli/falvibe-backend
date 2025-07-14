@@ -21,11 +21,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'))
 
-const options = {
-  secretKey: process.env.CLERK_SECRET_KEY,
-  publishableKey: process.env.CLERK_PUBLISHABLE_KEY}
+app.use(clerkMiddleware());
+
 // Routes
-app.use("/auth", clerkMiddleware(options), authRoutes);
+app.use("/auth", authRoutes);
 app.use("/user", authMiddleware, userRoutes);
 app.use("/fortune-teller", fortuneTellerRoutes);
 app.use("/questions", questionRoutes);

@@ -3,7 +3,7 @@ import BadRequestError from "../errors/BadRequestError.js"
 
 class UserService {
   static async getUser(req) {
-    const user = await User.findById(req.userId);
+    const user = await User.findOne({clerkId: req.userId});
 
     if(!user) {
       throw new BadRequestError("User is not found. ", { code: 'INVALID_USER_ID' });
@@ -27,7 +27,7 @@ class UserService {
   }
 
   static async deleteUser(req) {
-    const deletedUser = await User.findByIdAndDelete(req.userId);
+    const deletedUser = await User.findOneAndDelete({clerkId: req.userId});
     if(!deletedUser) {
       throw new BadRequestError("User is not found. ", { code: 'INVALID_USER_ID' });
     }
