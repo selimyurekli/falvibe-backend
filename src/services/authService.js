@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import BaseError from "../errors/BaseError.js";
 import AuthenticationError from "../errors/AuthenticationError.js";
+import { clerkClient } from '@clerk/express';
 
 dotenv.config();
 
